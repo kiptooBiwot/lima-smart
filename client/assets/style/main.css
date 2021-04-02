@@ -1,0 +1,86 @@
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('~assets/fonts/Poppins/Poppins-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('~assets/fonts/Poppins/Poppins-Bold.ttf') format('truetype');
+}
+
+html, body {
+  font-family: 'Poppins', sans-serif !important;
+}
+
+h1 {
+  color: #727475;
+  font-size: 40px;
+  line-height: 50px;
+  font-weight: bold;
+}
+
+h2 {
+  color: #727475;
+  font-size: 30px;
+  line-height: 30px;
+  font-weight: bold;
+}
+
+h3 {
+  color: #a4a4a4;
+  letter-spacing: 2px;
+  font-size: 20px;
+  line-height: 20px;
+  font-weight: lighter;
+}
+
+p {
+  color: #a3a3a3;
+  font-size: 15px;
+  line-height: 29px;
+  overflow-x: hidden;
+}
+
+.v-label {
+  font-size: 13px !important;
+  color: #a3a3a3 !important;
+}
+
+/* BUTTON STYLE */
+.my-btn {
+  border-radius: 0px !important;
+  padding: 25px 80px !important;
+}
+
+.text-btn {
+  color: #4caf50 !important;
+  font-size: 11px !important;
+  padding: 0 0 !important;
+  text-transform: unset !important;
+}
+
+
+/* .v-text-field--outlined>>>fieldset {
+  border-color: #a3a3a3;
+}
+
+.v-application div.v-text-field--outlined {
+  color: #a3a3a3 !important;
+}*/
+
+.v-text-field--outlined.v-input--is-focused fieldset,
+.v-text-field--outlined.v-input--has-state fieldset {
+  border-color: #8c9871 !important;
+}
+
+/* body {
+  /* font-family: Poppins, sans-serif, Helvetica, Arial; */
+  /*font-size: 13px;
+  color: #525050;
+} */
