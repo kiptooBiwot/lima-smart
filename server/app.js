@@ -2,8 +2,11 @@ const express       = require('express')
 const mongoose      = require('mongoose')
 const morgan        = require('morgan')
 const cors          = require('cors')
-const createError = require('http-errors')
+const createError   = require('http-errors')
 require('dotenv').config()
+
+// Routes
+const UserRoutes = require('./routes/UserRoutes.js')
 
 const PORT = 3000
 
@@ -14,6 +17,7 @@ mongoose.connect(process.env.DB_CONNECTION, {
     useNewUrlParser: true,
     useFindAndModify: true,
     useUnifiedTopology: true,
+    useCreateIndex: true,
 }, () => {
     console.log('Cloud Database Connected...')
 })
@@ -28,6 +32,8 @@ app.use(cors())
 app.get('/', (req, res) => {
     res.send({message: 'Welcome to Lima Smart server'})
 })
+
+app.use('/api/users', UserRoutes)
 
 // Error handling
 app.use(async (req, res, next) => {
