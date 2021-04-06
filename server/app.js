@@ -4,6 +4,7 @@ const morgan        = require('morgan')
 const cors          = require('cors')
 const createError   = require('http-errors')
 require('dotenv').config()
+require('./helpers/redis.init')
 
 // Routes
 const UserRoutes = require('./routes/UserRoutes.js')

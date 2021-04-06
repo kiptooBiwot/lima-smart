@@ -1,6 +1,7 @@
 const User = require("../models/User.model.js");
 const { registerSchema } = require('../helpers/Validation.Schema')
 const createError = require('http-errors')
+const { signAccessToken, signRefreshToken } = require('../helpers/jwt_helpers.js')
 
 module.exports.registerUser = async (req, res, next) => {
   try {
@@ -17,12 +18,19 @@ module.exports.registerUser = async (req, res, next) => {
       ...userInput
     })
 
-    const savedUser = newUser.save()
+    const savedUser = await newUser.save()
+
+    console.log(`User from DB: ${savedUser}`)
     
     if (savedUser) {
-      res.status(200).send({ message: 'Account created', user: savedUser })
+      // Generate access token
+      const accessToken = await signAccessToken(savedUser)
+      const refreshToken = await signRefreshToken(savedUser)
+      // console.log(`Access Token: ${accessToken}`)
+      // console.log(`Refresh Token: ${refreshToken}`)
+      res.status(200).send({ message: "Account created", user: savedUser.email });
     }
-  } catch (err) {
+  } catch (err) { 
     next(err)
   }
 }
