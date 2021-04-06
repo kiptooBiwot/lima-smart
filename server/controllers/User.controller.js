@@ -1,5 +1,5 @@
 const User = require("../models/User.model.js");
-const { registerSchema } = require('../helpers/Validation.Schema')
+const { registerSchema, loginSchema } = require('../helpers/Validation.Schema')
 const createError = require('http-errors')
 const { signAccessToken, signRefreshToken } = require('../helpers/jwt_helpers.js')
 
@@ -28,9 +28,40 @@ module.exports.registerUser = async (req, res, next) => {
       const refreshToken = await signRefreshToken(savedUser)
       // console.log(`Access Token: ${accessToken}`)
       // console.log(`Refresh Token: ${refreshToken}`)
-      res.status(200).send({ message: "Account created", user: savedUser.email });
+      res.status(200).send({ message: "Account created", user: savedUser.email, tokens: [{access: accessToken, refresh: refreshToken}] });
     }
-  } catch (err) { 
+  } catch (err) {
+    if (err.isJoi === true) err.status = 422 
+    next(err)
+  }
+}
+
+module.exports.loginUser = async (req, res, next) => {
+  try {
+    // Validate the inputs from the user
+    const validatedInputs = await loginSchema.validateAsync(req.body)
+
+    // Check if the user exists in the database
+    const user = await User.findOne({ email: validatedInputs.email })
+    if (!user) throw createError.NotFound(`Account not found. You may want to register.`)
+
+    // Compare passwords
+    const passwordMatch = await user.isValidPassword(validatedInputs.password)
+    
+    if (!passwordMatch) throw createError.Unauthorized('Invalid login credentials')
+
+    // Generate Access and Refresh tokens
+    const accessToken = await signAccessToken(user)
+    const refreshToken = await signRefreshToken(user)
+
+    res.header('x-access-token', accessToken).send({
+      message: `Login successful!`,
+      token: `Bearer ${accessToken}`,
+      refreshToken: `Bearer ${refreshToken}`
+    })
+
+  } catch (err) {
+    if (err.isJoi === true) return next(createError.BadRequest(`Invalid login credentials`))
     next(err)
   }
 }
