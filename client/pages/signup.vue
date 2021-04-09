@@ -37,7 +37,7 @@
 
                 <v-divider />
 
-                <v-stepper-step step="3">
+                <v-stepper-step :complete="e1 > 3" step="3">
                   Farm details
                 </v-stepper-step>
                 <v-divider />
@@ -52,14 +52,47 @@
                   <v-card outlined width="80%" class="mx-auto">
                     <v-row align="center" justify="center">
                       <v-col cols="10" class="pt-10">
-                        <v-form>
-                          <!-- <v-text-field outlined label="First name" dense /> -->
-                          <!-- <v-text-field outlined label="Last name" dense /> -->
-                          <!-- <v-text-field outlined label="Mobile phone number" dense /> -->
-                          <v-text-field outlined label="Email" dense />
-                          <!-- <v-text-field outlined label="Gender" dense /> -->
-                          <v-text-field outlined label="Password" type="password" append-icon="mdi-eye-closed" dense />
-                          <v-text-field outlined label="Confirm Password" type="password" append-icon="mdi-eye-closed" dense />
+                        <v-form
+                          ref="form"
+                          v-model="valid"
+                          lazy-validation
+                        >
+                          <v-alert v-if="alert" :type="alert.type" dense>
+                            {{ alert.message }}
+                          </v-alert>
+                          <v-text-field
+                            v-model="credentials.email"
+                            :rules="emailRules"
+                            required
+                            prepend-inner-icon="mdi-email"
+                            outlined
+                            label="Email"
+                            dense
+                          />
+                          <v-text-field
+                            v-model="credentials.password"
+                            outlined
+                            :rules="passwordRules"
+                            required
+                            prepend-inner-icon="mdi-lock"
+                            label="Password"
+                            :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+                            dense
+                            :type="show ? 'text' : 'password'"
+                            @click:append="show = !show"
+                          />
+                          <v-text-field
+                            v-model="confirmPassword"
+                            outlined
+                            :rules="passwordRules"
+                            required
+                            prepend-inner-icon="mdi-lock"
+                            label="Confirm Password"
+                            :type="confirmShow ? 'text' : 'password'"
+                            dense
+                            :append-icon="confirmShow ? 'mdi-eye' : 'mdi-eye-off'"
+                            @click:append="confirmShow = !confirmShow"
+                          />
                         </v-form>
                       </v-col>
                     </v-row>
@@ -69,8 +102,11 @@
                       tile
                       color="success"
                       class="my-btn"
-                      @click="e1=2"
+                      :loading="loading"
+                      :disabled="loading"
+                      @click.prevent="registerAccount"
                     >
+                      <!-- @click="e1=2" -->
                       Continue
                     </v-btn>
                     <v-spacer />
@@ -115,14 +151,6 @@
                       Continue
                     </v-btn>
                     <v-spacer />
-                    <!-- <v-btn
-                      outlined
-                      color="success"
-                      class="my-btn"
-                      to="/login"
-                    >
-                      Cancel
-                    </v-btn> -->
                   </v-card-actions>
                 </v-stepper-content>
 
@@ -200,28 +228,6 @@
                 </v-stepper-content>
               </v-stepper-items>
             </v-stepper>
-            <!-- <v-card outlined class="pa-5">
-              <v-form>
-                <v-row>
-                  <v-col cols="12" md="6">
-                    <v-text-field outlined label="First name" dense />
-                    <v-text-field outlined label="Last name" dense />
-                    <v-text-field outlined label="Mobile phone number" dense />
-                    <v-text-field outlined label="Email" dense />
-                    <v-text-field outlined label="Gender" dense />
-                    <v-text-field outlined label="Password" type="password" append-icon="mdi-eye-closed" dense />
-                  </v-col>
-                  <v-col cols="12" md="6">
-                    <v-text-field outlined label="County" dense />
-                    <v-text-field outlined label="Sub-county" dense />
-                    <v-text-field outlined label="Ward" dense />
-                    <v-text-field outlined label="Village" dense />
-                    <v-text-field outlined label="Education level" dense />
-                    <v-text-field outlined label="Confirm Password" type="password" append-icon="mdi-eye-closed" dense />
-                  </v-col>
-                </v-row>
-              </v-form>
-            </v-card> -->
           </v-card-text>
         </v-card>
       </v-col>
@@ -233,7 +239,55 @@
 export default {
   data () {
     return {
-      e1: 1
+      loading: false,
+      alert: null,
+      show: false,
+      confirmShow: false,
+      e1: 1,
+      emailRules: [
+        v => !!v || 'Email is required',
+        v => /.+@.+\..+/.test(v) || 'E-mail must be valid'
+      ],
+      passwordRules: [
+        v => !!v || 'Password is required',
+        v => (v && v.length >= 6) || 'Password must have at least 6 characters'
+      ],
+      valid: true,
+      confirmPassword: '',
+      credentials: {
+        email: '',
+        password: ''
+      }
+    }
+  },
+  methods: {
+    registerAccount () {
+      // this.$refs.form.validate()
+      this.alert = null
+      this.loading = true
+      if (this.credentials.password !== this.confirmPassword) {
+        this.alert = { type: 'error', message: 'Passwords did not match!' }
+        this.loading = false
+        return
+      }
+
+      this.$store.dispatch('registerUser', this.credentials)
+        .then((response) => {
+          this.alert = { type: 'success', message: 'Account Created' }
+          this.$refs.form.reset()
+
+          // Show the user account createion notification for 3 sec then proceed
+          setTimeout(() => {
+            // this.e1 = 2
+            this.loading = false
+          }, 3000)
+        })
+        .catch((error) => {
+          this.loading = false
+          if (error.response && error.response.data) {
+            this.alert = { type: 'error', message: error.response.data.error.message || error.response.status }
+          }
+        })
     }
   }
 }

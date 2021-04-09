@@ -28,7 +28,7 @@ module.exports.registerUser = async (req, res, next) => {
       const refreshToken = await signRefreshToken(savedUser)
       // console.log(`Access Token: ${accessToken}`)
       // console.log(`Refresh Token: ${refreshToken}`)
-      res.status(200).send({ message: "Account created", user: savedUser.email, tokens: [{access: accessToken, refresh: refreshToken}] });
+      res.status(200).json({ message: "Account created", user: savedUser, tokens: [{access: accessToken, refresh: refreshToken}] });
     }
   } catch (err) {
     if (err.isJoi === true) err.status = 422 
