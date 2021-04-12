@@ -1,6 +1,6 @@
 export const state = () => ({
   user: null,
-  isLoggedIn: false
+  isRegistered: false
 })
 
 export const getters = {
@@ -9,7 +9,7 @@ export const getters = {
 
 export const actions = {
   async registerUser ({ commit }, { email, password }) {
-    const response = await this.$axios.post('http://localhost:3000/api/users/register', {
+    const response = await this.$axios.post('/api/users/register', {
       email,
       password
     })

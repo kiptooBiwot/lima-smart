@@ -237,6 +237,7 @@
 
 <script>
 export default {
+  auth: false,
   data () {
     return {
       loading: false,
@@ -271,7 +272,7 @@ export default {
         return
       }
 
-      this.$store.dispatch('registerUser', this.credentials)
+      this.$store.dispatch('register/registerUser', this.credentials)
         .then((response) => {
           this.alert = { type: 'success', message: 'Account Created' }
           this.$refs.form.reset()

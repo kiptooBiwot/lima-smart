@@ -65,3 +65,16 @@ module.exports.loginUser = async (req, res, next) => {
     next(err)
   }
 }
+
+module.exports.getUser = async (req, res, next) => {
+  try {
+    console.log(req.user)
+    // TODO: Use the login token to get the user profile back
+    const user = await User.findOne({ email: req.user.email })
+    if (!user) throw createError.NotFound('User not found')
+    
+    res.json({ user:user })
+  } catch (err) {
+    next(err)
+  }
+}

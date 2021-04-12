@@ -8,10 +8,11 @@ module.exports = {
       (payload = {
         id: user.id,
         role: user.role,
+        email: user.email,
       }),
         (secret = process.env.ACCESS_TOKEN_SECRET),
         (options = {
-          expiresIn: "1m",
+          expiresIn: "24h",
         });
       jwt.sign(payload, secret, options, (err, token) => {
         if (err) {
@@ -31,6 +32,7 @@ module.exports = {
     try {
       const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
       req.user = decoded;
+      console.log(`REQ.User: ${req.user}`)
       next();
     } catch (err) {
       if (err.name === "JsonwebTokenError") {

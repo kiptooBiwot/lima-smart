@@ -10,6 +10,10 @@
           flat
         />
       </v-col>
+      <div v-if="$auth.loggedIn">
+        {{ $auth.user.email }}
+        <!-- Show logout button -->
+      </div>
       <v-col cols="4">
         <v-list rounded two-line dense class="py-0">
           <v-list-item>

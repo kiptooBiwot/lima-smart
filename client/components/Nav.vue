@@ -8,13 +8,18 @@
     <v-toolbar-title>Lima Smart</v-toolbar-title>
 
     <v-spacer />
-
-    <v-btn
-      text
-      to="/login"
-    >
-      Log In
-    </v-btn>
+    <div v-if="$auth.loggedIn">
+      <!-- Display Username -->
+      <!-- Show Sign Out -->
+    </div>
+    <div v-else>
+      <v-btn
+        text
+        to="/login"
+      >
+        Log In
+      </v-btn>
+    </div>
 
     <v-btn
       text

@@ -22,14 +22,27 @@
             </v-card-subtitle>
             <v-card-text>
               <v-card class="ma-0 pa-5" elevation="0" outlined>
-                <v-form>
+                <v-form
+                  ref="form"
+                  v-model="valid"
+                  lazy-validation
+                >
+                  <v-alert v-if="alert" :type="alert.type" dense>
+                    {{ alert.message }}
+                  </v-alert>
                   <v-text-field
+                    v-model="credentials.email"
+                    :rules="emailRules"
+                    required
                     outlined
                     prepend-inner-icon="mdi-email"
                     dense
                     label="Email"
                   />
                   <v-text-field
+                    v-model="credentials.password"
+                    required
+                    :rules="passwordRules"
                     outlined
                     prepend-inner-icon="mdi-lock"
                     :type="showPassword ? 'text' : 'password'"
@@ -47,9 +60,11 @@
             <v-card-actions>
               <v-btn
                 tile
+                :loading="loading"
+                :disabled="loading"
                 color="success"
                 class="my-btn"
-                to="/dashboard"
+                @click.prevent="signInUser"
               >
                 Sign In
               </v-btn>
@@ -78,10 +93,67 @@ export default {
     // LoginForm
   },
   layout: 'login',
+  auth: false,
   data () {
     return {
-      showPassword: false
+      alert: false,
+      loading: false,
+      showPassword: false,
+      valid: true,
+      credentials: {
+        email: '',
+        password: ''
+      },
+      emailRules: [
+        v => !!v || 'Email is required',
+        v => /.+@.+\..+/.test(v) || 'E-mail must be valid'
+      ],
+      passwordRules: [
+        v => !!v || 'Password is required'
+      ]
     }
+  },
+  methods: {
+    async signInUser () {
+      try {
+        this.alert = null
+        this.loading = true
+        const result = await this.$auth.loginWith('local', { data: this.credentials })
+        console.log(result)
+        this.alert = { type: 'success', message: result.data.message }
+        this.$refs.form.reset()
+        setTimeout(() => {
+          this.loading = false
+          this.$router.push('/dashboard')
+        }, 3000)
+      } catch (error) {
+        if (error.response && error.response.data) {
+          this.loading = false
+          this.alert = { type: 'error', message: error.response.data.error.message || error.response.status }
+        }
+      }
+    }
+    // signInUser () {
+    //   this.alert = null
+    //   this.loading = true
+
+    //   this.$store.dispatch('login/loginUser', {
+    //     email: this.email,
+    //     password: this.password
+    //   })
+    //     .then((response) => {
+    //       this.alert = { type: 'success', message: 'Welcome back!' }
+    //       this.$refs.form.reset()
+    //       setTimeout(() => {
+    //         this.loading = false
+    //         this.$router.push('/dashboard')
+    //       }, 2000)
+    //     }).catch((error) => {
+    //       if (error.response && error.response.data) {
+    //         this.alert = { type: 'success', message: error.response.data.error.message || error.response.status }
+    //       }
+    //     })
+    // }
   }
 }
 </script>
