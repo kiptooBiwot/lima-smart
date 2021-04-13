@@ -12,7 +12,7 @@ module.exports = {
       }),
         (secret = process.env.ACCESS_TOKEN_SECRET),
         (options = {
-          expiresIn: "24h",
+          expiresIn: "1h",
         });
       jwt.sign(payload, secret, options, (err, token) => {
         if (err) {
@@ -47,6 +47,7 @@ module.exports = {
     (payload = {
       id: user.id,
       role: user.role,
+      email: user.email,
     }),
       (secret = process.env.REFRESH_TOKEN_SECRET);
     options = {
@@ -72,12 +73,15 @@ module.exports = {
 },
   verifyRefreshToken: (refreshToken) => {
     return new Promise((resolve, reject) => {
+      if (!refreshToken) throw next(createError.Unauthorized())
+
+    const token = refreshToken.split(" ")[1]
       jwt.verify(
-        refreshToken,
+        token,
         process.env.REFRESH_TOKEN_SECRET,
         (err, payload) => {
-          if (err) return reject(createError.Unauthorized());
-          const userId = payload.aud;
+          if (err) return reject(createError.Unauthorized())
+          const userId = payload.id
 
           // Check the token from Redis server if it exists
           client.GET(userId, (err, reply) => {
@@ -86,8 +90,9 @@ module.exports = {
               reject(createError.InternalServerError());
               return;
             }
-            // Check if the refreshToken matches the redis-stored token
-            if (refreshToken === reply) return resolve(userId);
+            console.log(`REDIS REPLY: ${reply}`)
+            // Check if the token matches the redis-stored token
+            if (token === reply) return resolve(userId)
             // If tokens did not match
             reject(createError.Unauthorized());
           });

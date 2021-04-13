@@ -14,14 +14,7 @@ const PORT = 3000
 const app = express()
 
 // DB Connection
-mongoose.connect(process.env.DB_CONNECTION, {
-    useNewUrlParser: true,
-    useFindAndModify: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-}, () => {
-    console.log('Cloud Database Connected...')
-})
+require('./helpers/db.init')
 
 // Middleware
 app.use(express.json())

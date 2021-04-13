@@ -120,12 +120,13 @@ export default {
         this.loading = true
         const result = await this.$auth.loginWith('local', { data: this.credentials })
         console.log(result)
+        console.log(`TOKEN_STATUS: ${this.$auth.strategy.token.status()}`)
         this.alert = { type: 'success', message: result.data.message }
         this.$refs.form.reset()
         setTimeout(() => {
           this.loading = false
           this.$router.push('/dashboard')
-        }, 3000)
+        }, 2000)
       } catch (error) {
         if (error.response && error.response.data) {
           this.loading = false
@@ -133,27 +134,6 @@ export default {
         }
       }
     }
-    // signInUser () {
-    //   this.alert = null
-    //   this.loading = true
-
-    //   this.$store.dispatch('login/loginUser', {
-    //     email: this.email,
-    //     password: this.password
-    //   })
-    //     .then((response) => {
-    //       this.alert = { type: 'success', message: 'Welcome back!' }
-    //       this.$refs.form.reset()
-    //       setTimeout(() => {
-    //         this.loading = false
-    //         this.$router.push('/dashboard')
-    //       }, 2000)
-    //     }).catch((error) => {
-    //       if (error.response && error.response.data) {
-    //         this.alert = { type: 'success', message: error.response.data.error.message || error.response.status }
-    //       }
-    //     })
-    // }
   }
 }
 </script>

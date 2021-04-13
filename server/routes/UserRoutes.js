@@ -8,4 +8,8 @@ router.post('/login', UserController.loginUser)
 
 router.get('/me', verifyAccessToken, UserController.getUser)
 
+router.post('/refresh-token', UserController.refreshToken)
+
+router.delete('/logout', UserController.logout)
+
 module.exports = router

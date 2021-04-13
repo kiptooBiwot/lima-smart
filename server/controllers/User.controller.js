@@ -1,7 +1,12 @@
 const User = require("../models/User.model.js");
 const { registerSchema, loginSchema } = require('../helpers/Validation.Schema')
 const createError = require('http-errors')
-const { signAccessToken, signRefreshToken } = require('../helpers/jwt_helpers.js')
+const {
+  signAccessToken,
+  signRefreshToken,
+  verifyRefreshToken,
+} = require("../helpers/jwt_helpers.js");
+const client = require('../helpers/redis.init')
 
 module.exports.registerUser = async (req, res, next) => {
   try {
@@ -76,5 +81,51 @@ module.exports.getUser = async (req, res, next) => {
     res.json({ user:user })
   } catch (err) {
     next(err)
+  }
+}
+
+module.exports.refreshToken = async (req, res, next) => {
+  try {
+    const { refreshToken } = req.body
+
+    if (!refreshToken) throw createError.BadRequest()
+    const userId = await verifyRefreshToken(refreshToken)
+    // get user from db
+    const user = await User.findOne({ _id: userId })
+
+    const accessToken = await signAccessToken(user)
+    const refreshedToken = await signRefreshToken(user)
+
+    res.send({
+      token: `Bearer ${accessToken}`,
+      refreshToken: `Bearer ${refreshedToken}`
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+module.exports.logout = async (req, res, next) => {
+  try {
+    const { refreshToken } = req.body
+    console.log(req.body)
+    if (!refreshToken) throw createError.BadRequest()
+    const userId = await verifyRefreshToken(refreshToken)
+
+    console.log(`USER_ID: ${userId}`)
+    // Delete the refresh token from Redis
+    client.DEL(userId, (err, val) => {
+      if (err) {
+        console.log(err)
+        throw createError.InternalServerError()
+      }
+
+      console.log(val)
+      res.send({
+        message: 'Logged out!',
+      })
+    })
+  } catch (error) {
+    next(error)
   }
 }

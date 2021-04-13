@@ -10,12 +10,8 @@
           flat
         />
       </v-col>
-      <div v-if="$auth.loggedIn">
-        {{ $auth.user.email }}
-        <!-- Show logout button -->
-      </div>
       <v-col cols="4">
-        <v-list rounded two-line dense class="py-0">
+        <v-list v-if="$auth.loggedIn" rounded two-line dense class="py-0">
           <v-list-item>
             <v-list-item-avatar>
               <img
@@ -24,8 +20,8 @@
               >
             </v-list-item-avatar>
             <v-list-item-content>
-              <v-list-item-title>Kiptoo Biwot</v-list-item-title>
-              <v-list-item-subtitle>Developer</v-list-item-subtitle>
+              <v-list-item-title>{{ $auth.user.email }}</v-list-item-title>
+              <v-list-item-subtitle>{{ $auth.user.role }}</v-list-item-subtitle>
             </v-list-item-content>
             <v-spacer />
             <v-menu offset-y>
@@ -46,7 +42,9 @@
                   <v-list-item-icon>
                     <v-icon>{{ item.icon }}</v-icon>
                   </v-list-item-icon>
-                  <v-list-item-title>{{ item.title }}</v-list-item-title>
+                  <v-list-item-title @click.prevent="logout">
+                    {{ item.title }}
+                  </v-list-item-title>
                 </v-list-item>
               </v-list>
             </v-menu>
@@ -64,7 +62,21 @@ export default {
       { title: 'My Profile', icon: 'mdi-account' },
       { title: 'Sign Out', icon: 'mdi-logout' }
     ]
-  })
+  }),
+  methods: {
+    async logout () {
+      console.log('LEt\'s start')
+      console.log(this.$auth.strategy.refreshToken.get())
+      const response = await this.$axios.delete('users/logout', { data: { refreshToken: this.$auth.strategy.refreshToken.get() } })
+      console.log(response)
+      await this.$auth.logout()
+      this.$router.push('/login')
+      // try {
+      // } catch (err) {
+      //   console.log(err)
+      // }
+    }
+  }
 
 }
 </script>
