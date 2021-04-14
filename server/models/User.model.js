@@ -21,6 +21,20 @@ const UserSchema = new mongoose.Schema(
       enum: ['Farmer', 'Agronomist', 'Admin'],
       default: 'Farmer'
     },
+    account_status: {
+      type: String,
+      required: true,
+      enum: ['Enabled', 'Disabled'],
+      default: 'Enabled'
+    },
+    user_profile: {
+      type: Schema.Types.ObjectId,
+      ref: 'Profile'
+    },
+    user_farms: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Farm'
+    }]
   },
   { timestamps: true }
 );

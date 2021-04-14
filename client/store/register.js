@@ -9,7 +9,7 @@ export const getters = {
 
 export const actions = {
   async registerUser ({ commit }, { email, password }) {
-    const response = await this.$axios.post('/api/users/register', {
+    const response = await this.$axios.post('/users/register', {
       email,
       password
     })

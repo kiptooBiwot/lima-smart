@@ -277,9 +277,9 @@ export default {
           this.alert = { type: 'success', message: 'Account Created' }
           this.$refs.form.reset()
 
-          // Show the user account createion notification for 3 sec then proceed
+          // Show the user account creation notification for 3 sec then proceed
           setTimeout(() => {
-            // this.e1 = 2
+            this.e1 = 2
             this.loading = false
           }, 3000)
         })

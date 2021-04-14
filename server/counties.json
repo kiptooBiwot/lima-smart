@@ -1,0 +1,149 @@
+[
+  {
+    "name": "Uasin Gishu",
+    "capital": "Eldoret",
+    "code": 27,
+    "sub_counties": [
+      {
+        "name": "Ainabkoi",
+        "code": 1,
+        "wards": [
+          {
+            "id": 1,
+            "name": "Kapsoya"
+          },
+          {
+            "id": 2,
+            "name": "Kaptagat"
+          },
+          {
+            "id": 3,
+            "name": "Ainabkoi/Olare"
+          }
+        ]
+      },
+      {
+        "name": "Kapseret",
+        "code": 2,
+        "wards": [
+          {
+            "id": 1,
+            "name": "Simat/Kapseret"
+          },
+          {
+            "id": 2,
+            "name": "Kipkenyo"
+          },
+          {
+            "id": 3,
+            "name": "Megun"
+          },
+          {
+            "id": 4,
+            "name": "Langas"
+          },
+          {
+            "id": 5,
+            "name": "Ngeria"
+          }
+        ]
+      },
+      {
+        "name": "Kesses",
+        "code": 3,
+        "wards": [
+          {
+            "id": 1,
+            "name": "Racecourse"
+          },
+          {
+            "id": 2,
+            "name": "Cheptiret/Kipchamo"
+          },
+          {
+            "id": 3,
+            "name": "Tulwet/Chuiyat"
+          },
+          {
+            "id": 4,
+            "name": "Tarakwa"
+          }
+        ]
+      },
+      {
+        "name": "Moiben",
+        "code": 4,
+        "wards": [
+          {
+            "id": 1,
+            "name": "Tembelio"
+          },
+          {
+            "id": 2,
+            "name": "Karuna/Meibeki"
+          },
+          {
+            "id": 3,
+            "name": "Moiben"
+          },
+          {
+            "id": 4,
+            "name": "Kimumu"
+          }
+        ]
+      },
+      {
+        "name": "Soy",
+        "code": 5,
+        "wards": [
+          {
+            "id": 1,
+            "name": "Moi's Bridge"
+          },
+          {
+            "id": 2,
+            "name": "Kapkures"
+          },
+          {
+            "id": 3,
+            "name": "Segero/Barsombe"
+          },
+          {
+            "id": 4,
+            "name": "Kipsomba"
+          },
+          {
+            "id": 5,
+            "name": "Kuinet/Kapsuswa"
+          }
+        ]
+      },
+      {
+        "name": "Turbo",
+        "code": 6,
+        "wards": [
+          {
+            "id": 1,
+            "name": "Ngenyilel"
+          },
+          {
+            "id": 2,
+            "name": "Tapsagoi"
+          },
+          {
+            "id": 3,
+            "name": "Kamagut"
+          },
+          {
+            "id": 4,
+            "name": "Kiplombe"
+          },
+          {
+            "id": 5,
+            "name": "Kapsaos"
+          }
+        ]
+      }
+    ]
+  }
+]
