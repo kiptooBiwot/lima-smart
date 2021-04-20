@@ -1,6 +1,7 @@
-const mongoose = require('mongoose')
+const { Schema, model } = require('mongoose')
 
-const farmSchema = new mongoose.Schema({
+
+const farmSchema = new Schema({
   acrage: {
     type: Number,
     trim: true,
@@ -30,10 +31,10 @@ const farmSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
-  farm_owner: {
+  owner: {
     type: Schema.Types.ObjectId,
-    ref: 'Users'
+    ref: 'User'
   }
 }, { timestamps: true })
 
-module.exports = mongoose.model('Farm', farmSchema)
+module.exports = model('Farm', farmSchema)

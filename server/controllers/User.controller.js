@@ -1,4 +1,6 @@
-const User = require("../models/User.model.js");
+const User =  require('../models/User.model.js')
+const Profile = require('../models/Profile.model')
+const Farm = require('../models/Farm.model')
 const { registerSchema, loginSchema } = require('../helpers/Validation.Schema')
 const createError = require('http-errors')
 const {
@@ -66,6 +68,7 @@ module.exports.loginUser = async (req, res, next) => {
     })
 
   } catch (err) {
+    console.log(err)
     if (err.isJoi === true) return next(createError.BadRequest(`Invalid login credentials`))
     next(err)
   }
@@ -124,6 +127,85 @@ module.exports.logout = async (req, res, next) => {
       res.send({
         message: 'Logged out!',
       })
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+module.exports.getUserProfile = async (req, res, next) => {
+  try {
+    const { id } = req.params
+    const userProfile = await User.findOne({ _id: id })
+    await userProfile.populate('profile').execPopulate()
+    res.send({ userProfile })
+  } catch (error) {
+    next(error)
+  }
+}
+
+module.exports.getAllUsers = async (req, res, next) => {
+  try {
+    const users = await User.find().populate('profile').populate('farm')
+    res.json(users)
+  } catch (error) {
+    next(error)
+  }
+}
+
+module.exports.createUserProfile = async (req, res, next) => {
+  try {
+    const { id } = req.params
+
+    // TODO: Validate user inputs before saving to DB
+
+    // Create a new instance of Profile from req.body
+    const userProfile = new Profile(req.body)
+    // RELATIONSHIP -> add user id from params to user profile
+    userProfile.user_id = id
+
+    // save
+    await userProfile.save()
+
+    res.json({
+      message: 'Your information is captured',
+    })
+
+  } catch (error) {
+    next (error)
+  }
+}
+
+module.exports.createUserFarm = async (req, res, next) => {
+  try {
+    const { id } = req.params
+
+    const newFarm = new Farm(req.body)
+    newFarm.owner = id
+
+    console.log(newFarm)
+
+    const userFarm = await newFarm.save()
+
+    res.json({
+      message: 'Success',
+      farm: newFarm
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+module.exports.getUserFarm = async (req, res, next) => {
+  try {
+    const { id } = req.params
+    const userFarm = await User.findOne({ _id: id })
+      .populate('profile')
+      .populate('farm')
+
+    res.json({
+      message: 'Success',
+      userFarm: userFarm
     })
   } catch (error) {
     next(error)

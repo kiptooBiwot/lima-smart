@@ -7,7 +7,7 @@ require('dotenv').config()
 require('./helpers/redis.init')
 
 // Routes
-const UserRoutes = require('./routes/UserRoutes.js')
+const UserRoutes = require('./routes/User.routes.js')
 
 const PORT = 3000
 

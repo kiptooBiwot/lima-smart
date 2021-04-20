@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+const { Schema, model } = require("mongoose");
 
-const profileSchema = new mongoose.Schema({
+const profileSchema = new Schema({
   first_name: {
     type: String,
     required: true,
@@ -29,10 +29,10 @@ const profileSchema = new mongoose.Schema({
     enum: ['Primary Level', 'Secondary Level', 'Certificate', 'Diploma', 'Bachelors Degree', 'Masters Level', 'Doctorate Level'],
     required: true
   },
-  user_model: {
+  user_id: {
     type: Schema.Types.ObjectId,
     ref: 'User'
   }
 }, { timestamps: true })
 
-module.exports = mongoose.model('Profile', profileSchema)
+module.exports = model('Profile', profileSchema)

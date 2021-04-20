@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
+const { Schema, model } = require('mongoose')
 const bcrypt = require('bcrypt')
 
-const UserSchema = new mongoose.Schema(
+const UserSchema = new Schema(
   {
     email: {
       type: String,
@@ -26,18 +26,31 @@ const UserSchema = new mongoose.Schema(
       required: true,
       enum: ['Enabled', 'Disabled'],
       default: 'Enabled'
-    },
-    user_profile: {
-      type: Schema.Types.ObjectId,
-      ref: 'Profile'
-    },
-    user_farms: [{
-      type: Schema.Types.ObjectId,
-      ref: 'Farm'
-    }]
+    }
+    // profile: {
+    //   type: Schema.Types.ObjectId,
+    //   ref: 'Profile'
+    // }
   },
   { timestamps: true }
 );
+
+UserSchema.virtual('profile', {
+  ref: 'Profile',
+  localField: '_id',
+  foreignField: 'user_id',
+  justOne: true
+})
+// Create association with the Farm model
+UserSchema.virtual('farm', {
+  ref: 'Farm',
+  localField: '_id',
+  foreignField: 'owner',
+  justOne: false
+})
+
+UserSchema.set('toObject', { virtuals: true })
+UserSchema.set('toJSON', { virtuals: true })
 
 UserSchema.pre('save', async function (next) {
   try {
@@ -53,10 +66,12 @@ UserSchema.pre('save', async function (next) {
 
 UserSchema.methods.isValidPassword = async function (password) {
   try {
-    return await bcrypt.compare(password, this.password);
+    console.log(this.password)
+    console.log(password)
+    return bcrypt.compareSync(password, this.password);
   } catch (error) {
     throw error;
   }
 };
 
-module.exports = mongoose.model('User', UserSchema)
+module.exports = model('User', UserSchema)
